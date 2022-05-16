@@ -5,7 +5,7 @@ function App() {
 
   const [tenants, setTentants] = useState([]);
   const [tenantsWithFilters, setTentantsWithFilters] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -24,11 +24,24 @@ function App() {
   }
 
   const filterByStatus = (paymentStatus) => {
-    debugger;
     setTentantsWithFilters(tenants.filter((tenant)=>tenant.paymentStatus===paymentStatus));
   }
 
-  
+  const filterByLeaseEndDateMonthLessThan = (months) => {
+    const monthsRemaining = months-1;
+    setTentantsWithFilters(tenants.filter((tenant)=>monthDiffCalculator(tenant.leaseEndDate)===monthsRemaining));
+  }
+
+  const monthDiffCalculator = (leaseEndDate) => {
+    let months;
+    const currentDate = new Date();
+    const comparedDate = new Date(leaseEndDate);
+    months = (comparedDate.getFullYear() - currentDate.getFullYear()) * 12;
+    months -= currentDate.getMonth();
+    months += comparedDate.getMonth();
+    return months <= 0 ? 0 : months;
+  }
+
   return (
     loading ? <>Cargando</> :
       <>
@@ -41,7 +54,7 @@ function App() {
             <li className="nav-item" onClick={()=>filterByStatus('LATE')}>
               <a className="nav-link" href="#">Payment is late</a>
             </li>
-            <li className="nav-item">
+            <li className="nav-item" onClick={()=>filterByLeaseEndDateMonthLessThan(1)}>
               <a className="nav-link" href="#">Lease ends in less than a month</a>
             </li>
           </ul>
