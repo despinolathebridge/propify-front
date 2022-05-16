@@ -4,6 +4,7 @@ import { Service } from './Service';
 function App() {
 
   const [tenants, setTentants] = useState([]);
+  const [tenantsWithFilters, setTentantsWithFilters] = useState([]);
   const [loading, setLoading] = useState(true);
 
 
@@ -11,21 +12,33 @@ function App() {
     const fetchData = async () => {
       const data = await Service.getTenants();
       setTentants(data);
+      setTentantsWithFilters(data);
       setLoading(false);
     }
     fetchData();
   }, []);
 
+
+  const resetFilters = () => {
+    setTentantsWithFilters(tenants);
+  }
+
+  const filterByStatus = (paymentStatus) => {
+    debugger;
+    setTentantsWithFilters(tenants.filter((tenant)=>tenant.paymentStatus===paymentStatus));
+  }
+
+  
   return (
     loading ? <>Cargando</> :
       <>
         <div className="container">
           <h1>Tenants</h1>
           <ul className="nav nav-tabs">
-            <li className="nav-item">
+            <li className="nav-item" onClick={()=>resetFilters()}>
               <a className="nav-link active" href="#">All</a>
             </li>
-            <li className="nav-item">
+            <li className="nav-item" onClick={()=>filterByStatus('LATE')}>
               <a className="nav-link" href="#">Payment is late</a>
             </li>
             <li className="nav-item">
@@ -43,7 +56,7 @@ function App() {
               </tr>
             </thead>
             <tbody>
-            {tenants.map(tenant => {
+            {tenantsWithFilters.map(tenant => {
                 return <tr>
                         <td>{tenant.id}</td>
                         <td>{tenant.name}</td>
