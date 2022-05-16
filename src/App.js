@@ -6,6 +6,7 @@ function App() {
   const [tenants, setTentants] = useState([]);
   const [tenantsWithFilters, setTentantsWithFilters] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [newTenant, setnewTenant] = useState({});
 
 
   useEffect(() => {
@@ -49,6 +50,18 @@ function App() {
       setTentantsWithFilters(getTenantsReponse);
   }
 
+  const addNewTenant = () => {
+    const dummyDate = new Date();
+    setnewTenant({id: undefined, name:'', paymentStatus:'CURRENT', leaseEndDate: dummyDate.toISOString()});
+    //also create a function to show/hidden the tenat form
+  }
+  const handleOnSubmitForm = async (event) => {
+    event.preventDefault();
+    const tenantAddedResponse = await Service.addTenant(newTenant);
+    const getTenantsReponse = await Service.getTenants();
+    setTentants(getTenantsReponse);
+    setTentantsWithFilters(getTenantsReponse);
+  }
 
   return (
     loading ? <>Cargando</> :
@@ -92,24 +105,31 @@ function App() {
           </table>
         </div>
         <div className="container">
-          <button className="btn btn-secondary">Add Tenant</button>
+          <button className="btn btn-secondary" onClick={()=>addNewTenant()}>Add Tenant</button>
         </div>
         <div className="container">
-          <form>
+          <form onSubmit={handleOnSubmitForm}>
             <div className="form-group">
               <label>Name</label>
-              <input className="form-control"/>
+              <input className="form-control" 
+              value={newTenant.name}
+              onChange={(e) => setnewTenant({ ...newTenant, name: e.target.value})}/>
             </div>
             <div className="form-group">
               <label>Payment Status</label>
-              <select className="form-control">
+              <select className="form-control"
+              value={newTenant.paymentStatus} 
+              onChange={(e) => setnewTenant({ ...newTenant, paymentStatus: e.target.paymentStatus})}>
                 <option>CURRENT</option>
                 <option>LATE</option>
               </select>
             </div>
             <div className="form-group">
               <label>Lease End Date</label>
-              <input className="form-control"/>
+              <input className="form-control" 
+              name="leaseEndDate"
+              value={newTenant.leaseEndDate}
+              onChange={(e) => setnewTenant({ ...newTenant, name: e.target.leaseEndDate})}/>
             </div>
             <button className="btn btn-primary">Save</button>
             <button className="btn">Cancel</button>
