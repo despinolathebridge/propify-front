@@ -42,6 +42,14 @@ function App() {
     return months <= 0 ? 0 : months;
   }
 
+  const handleOndeleteTenantById = async (id) => {
+      const tenantDeletedResponse = await Service.deleteTenant(id);
+      const getTenantsReponse = await Service.getTenants();
+      setTentants(getTenantsReponse);
+      setTentantsWithFilters(getTenantsReponse);
+  }
+
+
   return (
     loading ? <>Cargando</> :
       <>
@@ -76,7 +84,7 @@ function App() {
                         <td>{tenant.paymentStatus}</td>
                         <td>{tenant.leaseEndDate}</td>
                         <td>
-                          <button className="btn btn-danger">Delete</button>
+                          <button className="btn btn-danger" onClick={()=>handleOndeleteTenantById(tenant.id)}>Delete</button>
                         </td>
                        </tr>;
               })}
