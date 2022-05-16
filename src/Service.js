@@ -3,8 +3,8 @@ const networkError = () => Math.floor(Math.random() * Math.floor(5)) === 0;
 const randomResponseTime = () => Math.floor(Math.random() * Math.floor(1000));
 
 function randomDate() {
-  const start = 1609459200000;
-  const end = 1640995199000;
+  const start = 1641006000000;
+  const end = 1672455600000;
   const date = new Date(+start + Math.random() * (end - start));
   date.setHours(0);
   return date.toISOString();
