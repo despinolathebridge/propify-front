@@ -1,9 +1,23 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { Service } from './Service';
 
 function App() {
 
+  const [tenants, setTentants] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await Service.getTenants();
+      setTentants(data);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
+
   return (
+    loading ? <>Cargando</> :
       <>
         <div className="container">
           <h1>Tenants</h1>
@@ -29,15 +43,17 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th>1</th>
-                <td>Mark Otto</td>
-                <td>CURRENT</td>
-                <td>12/31/2020</td>
-                <td>
-                  <button className="btn btn-danger">Delete</button>
-                </td>
-              </tr>
+            {tenants.map(tenant => {
+                return <tr>
+                        <td>{tenant.id}</td>
+                        <td>{tenant.name}</td>
+                        <td>{tenant.paymentStatus}</td>
+                        <td>{tenant.leaseEndDate}</td>
+                        <td>
+                          <button className="btn btn-danger">Delete</button>
+                        </td>
+                       </tr>;
+              })}
             </tbody>
           </table>
         </div>
